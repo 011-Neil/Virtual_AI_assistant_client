@@ -61,6 +61,7 @@ function ChatPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -89,10 +90,19 @@ function ChatPage() {
     setIsLoading(true);
 
     try {
+      let currentConvoId = conversationId;
+      if (!currentConvoId) {
+        const startResp = await fetch("/api/start", { method: "POST" });
+        if (!startResp.ok) throw new Error("Failed to start backend conversation.");
+        const startData = await startResp.json();
+        currentConvoId = startData.conversation_id;
+        setConversationId(currentConvoId);
+      }
+
       const resp = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ conversation_id: currentConvoId, message: trimmed }),
       });
 
       if (!resp.ok || !resp.body) {
@@ -151,12 +161,6 @@ function ChatPage() {
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Something went wrong.";
       setError(msg);
-      setMessages((prev) =>
-        prev[prev.length - 1]?.role === "assistant" &&
-        prev[prev.length - 1].content === ""
-          ? prev.slice(0, -1)
-          : prev,
-      );
     } finally {
       setIsLoading(false);
     }
@@ -164,6 +168,7 @@ function ChatPage() {
 
   const reset = () => {
     setMessages([]);
+    setConversationId(null);
     setError(null);
   };
 
