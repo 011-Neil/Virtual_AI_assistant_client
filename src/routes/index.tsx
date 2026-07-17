@@ -93,7 +93,7 @@ function ChatPage() {
     try {
       let currentConvoId = conversationId;
       if (!currentConvoId) {
-        const startResp = await fetch("/api/start", { method: "POST" });
+        const startResp = await fetch("http://127.0.0.1:8000/chat/start", { method: "POST" });
         if (!startResp.ok) throw new Error("Failed to start backend conversation.");
         const startData = await startResp.json();
         currentConvoId = startData.conversation_id;
