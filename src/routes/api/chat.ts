@@ -18,7 +18,7 @@ export const Route = createFileRoute("/api/chat")({
             );
           }
 
-          const response = await fetch("http://127.0.0.1:8000/chat/message", {
+          const response = await fetch("https://virtual-assitant-api.onrender.com/chat/message", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
-const BACKEND = "http://127.0.0.1:8000";
+const BACKEND = "https://virtual-assitant-api.onrender.com";
 
 async function startConversation() {
   const response = await fetch(`${BACKEND}/chat/start`, {
